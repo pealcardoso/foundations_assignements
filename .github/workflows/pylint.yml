@@ -1,6 +1,6 @@
 name: Pylint and pytest
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
