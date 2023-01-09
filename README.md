@@ -1,1 +1,2 @@
 # foundations_assignemetns
+[![Pylint and pytest](https://github.com/pealcardoso/foundations_assignements/actions/workflows/pylint.yml/badge.svg)](https://github.com/pealcardoso/foundations_assignements/actions/workflows/pylint.yml)
