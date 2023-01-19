@@ -1,22 +1,45 @@
 import argparse
 import pandas as pd
 
-def clean_data(region='PT'):
-    """Function to clean raw data eu life expectancy and write to csv portugal specific data"""
+def load_data():
+    """
+    Function to load the raw data from eu life expectancy
+
+    :return df: Returns pandas df with the raw data
+    """
     df=pd.read_csv('./life_expectancy/data/eu_life_expectancy_raw.tsv', sep='\t|,',engine ='python')
+    return df
+
+def clean_data(df):
+    """
+    Function to clean the raw data from eu life expectancy
+
+    :param df: Pandas df with the raw data
+    :return df: Returns a clean pandas df
+    """
     df=pd.melt(df, id_vars=df.columns[0:4], value_vars=df.columns[4:], var_name='year')
     df.rename(columns={'geo\\time':'region'},inplace=True)
     df = df.astype({"year": int})
     df.value = df.value.str.extract(r"(\d+\.\d+)")
     df.dropna(inplace=True)
     df = df.astype({"value": float})
+    return df
 
-    portugal=df[df.region==region]
-    portugal.to_csv('./life_expectancy/data/pt_life_expectancy.csv',index=False)
+def save_data(df,region):
+    """
+    Function to save the cleaned data from life expectancy for a specific region
+
+    :param df: Pandas df with the raw data
+    :param region: Region string to filter by
+    """
+    df_filter_by_region=df[df.region==region]
+    df_filter_by_region.to_csv('./life_expectancy/data/pt_life_expectancy.csv',index=False)
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser(description='Region input processing.')
     parser.add_argument('region', metavar='region', \
             type=str, nargs='?',help='region string',default='PT')
     args = parser.parse_args()
-    clean_data(args.region)
+    raw_df=load_data()
+    clean_df=clean_data(raw_df)
+    save_data(clean_df,args.region)
