@@ -35,6 +35,17 @@ def save_data(df,region):
     df_filter_by_region=df[df.region==region]
     df_filter_by_region.to_csv('./life_expectancy/data/pt_life_expectancy.csv',index=False)
 
+def main(region='PT'):
+    """
+    Calls all the functions to load, clean and save the data from life expectancy
+
+    :param region: Optional region string parameter that defaults into 'PT'
+    """
+    # pylint: disable=redefined-outer-name
+    raw_df=load_data()
+    clean_df=clean_data(raw_df)
+    save_data(clean_df,region)
+
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser(description='Region input processing.')
     parser.add_argument('region', metavar='region', \

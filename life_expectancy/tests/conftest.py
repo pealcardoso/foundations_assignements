@@ -14,7 +14,8 @@ def run_before_and_after_tests() -> None:
 
     # Teardown : fill with any logic you want
     file_path = OUTPUT_DIR / "pt_life_expectancy.csv"
-    file_path.unlink(missing_ok=True)
+    if file_path.exists():
+        file_path.unlink()
 
 
 @pytest.fixture(scope="session")
