@@ -20,7 +20,7 @@ def clean_data(df):
     df=pd.melt(df, id_vars=df.columns[0:4], value_vars=df.columns[4:], var_name='year')
     df.rename(columns={'geo\\time':'region'},inplace=True)
     df = df.astype({"year": int})
-    df.value = df.value.str.extract(r"(\d+\.\d+)")
+    df.value = df.value.str.extract(r"(\d+\.\d+)")  #cleans value column using a regex operator that only accepts strings with a float like format 00.0
     df.dropna(inplace=True)
     df = df.astype({"value": float})
     return df
@@ -49,7 +49,7 @@ def main(region='PT'):
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser(description='Region input processing.')
     parser.add_argument('region', metavar='region', \
-            type=str, nargs='?',help='region string',default='PT')
+            type=str, nargs='?',help='region string (example for Portugal: \'PT\')',default='PT')
     args = parser.parse_args()
     raw_df=load_data()
     clean_df=clean_data(raw_df)
