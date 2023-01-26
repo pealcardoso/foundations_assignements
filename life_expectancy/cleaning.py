@@ -20,7 +20,7 @@ def clean_data(df):
     df=pd.melt(df, id_vars=df.columns[0:4], value_vars=df.columns[4:], var_name='year')
     df.rename(columns={'geo\\time':'region'},inplace=True)
     df = df.astype({"year": int})
-    df.value = df.value.str.extract(r"(\d+\.\d+)")  #cleans value column using a regex operator that only accepts strings with a float like format 00.0
+    df.value = df.value.str.extract(r"(\d+\.\d+)") #cleans value column using a regex operator that only accepts strings with a float like format 00.0
     df.dropna(inplace=True)
     df = df.astype({"value": float})
     return df
