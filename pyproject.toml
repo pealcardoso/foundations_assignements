@@ -27,5 +27,6 @@ fail_under = 80
 disable = [
    "missing-module-docstring",
    "invalid-name",
-   "import-error"
+   "import-error",
+   "line-too-long"
 ]
