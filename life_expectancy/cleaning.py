@@ -1,14 +1,6 @@
 import argparse
 import pandas as pd
-
-def load_data(path):
-    """
-    Function to load the raw data from eu life expectancy
-
-    :return df: Returns pandas df with the raw data
-    """
-    df=pd.read_csv(path, sep='\t|,',engine ='python')
-    return df
+from life_expectancy.i_o import load_data, save_data
 
 def clean_data(df):
     """
@@ -25,18 +17,7 @@ def clean_data(df):
     df = df.astype({"value": float})
     return df
 
-def save_data(df,region):
-    """
-    Function to save the cleaned data from life expectancy for a specific region
-
-    :param df: Pandas df with the raw data
-    :param region: Region string to filter by
-    """
-    df_filter_by_region=df[df.region==region]
-    df_filter_by_region.to_csv('./life_expectancy/data/pt_life_expectancy.csv',index=False)
-    return df_filter_by_region.reset_index(drop=True)
-
-def main(region='PT',path='./life_expectancy/data/eu_life_expectancy_raw.tsv'):
+def main(region='PT', path='./life_expectancy/data/eu_life_expectancy_raw.tsv'):
     """
     Calls all the functions to load, clean and save the data from life expectancy
 
@@ -51,9 +32,8 @@ def main(region='PT',path='./life_expectancy/data/eu_life_expectancy_raw.tsv'):
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser(description='Input processing.')
     parser.add_argument('path', metavar='path', \
-            type=str, nargs='?',help='path to input file',default='./life_expectancy/data/eu_life_expectancy_raw.tsv') 
+            type=str, nargs='?',help='path to input file',default='./life_expectancy/data/eu_life_expectancy_raw.tsv')
     parser.add_argument('region', metavar='region', \
-            type=str, nargs='?',help='region string (example for Portugal: \'PT\')',default='PT')      
+            type=str, nargs='?',help='region string (example for Portugal: \'PT\')',default='PT')
     args = parser.parse_args()
     main(region=args.region,path=args.path)
-

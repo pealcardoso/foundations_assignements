@@ -24,7 +24,8 @@ def pt_life_expectancy_expected() -> pd.DataFrame:
     return pd.read_csv(FIXTURES_DIR / "pt_life_expectancy_sample_expected.csv")
 
 @pytest.fixture()
-def sample_data() -> str:    
+def sample_data() -> str:
+    """Fixture to create a sample of the data"""
     sample_path=OUTPUT_DIR / "sample.tsv"
     if not sample_path.exists():
         df=pd.read_csv(OUTPUT_DIR / "eu_life_expectancy_raw.tsv", sep='\t|,',engine ='python')
