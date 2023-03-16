@@ -31,4 +31,4 @@ def sample_data() -> str:
         df=pd.read_csv(OUTPUT_DIR / "eu_life_expectancy_raw.tsv", sep='\t|,',engine ='python')
         sample=df.sample(frac=0.1,random_state=1)
         sample.to_csv(sample_path,index=False)
-    return sample_path
+    return sample_path.as_posix()

@@ -28,5 +28,7 @@ disable = [
    "missing-module-docstring",
    "invalid-name",
    "import-error",
-   "line-too-long"
+   "line-too-long",
+   "too-few-public-methods",
+   "unnecessary-pass"
 ]
