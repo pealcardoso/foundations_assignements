@@ -58,15 +58,6 @@ class Strategy:
             if '.'+member == filepath.suffix:
                 return getattr(cls, member)
         raise ValueError(f"No member found with suffix {filepath.suffix}")
-# def clean_data(cleaner: FileCleaner):
-#     """
-#     Function to clean the raw data from eu life expectancy
-
-#     :param df: Pandas df with the raw data
-#     :return df: Returns a clean pandas df
-#     """
-#     df=cleaner.clean_data(df)
-#     return df
 
 def main(region: str = 'PT', path: Path =Path('./life_expectancy/data/eu_life_expectancy_raw.tsv')) -> pd.DataFrame:
     """
