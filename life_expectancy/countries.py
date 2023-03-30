@@ -53,7 +53,7 @@ class Country(enum.Enum):
     RU='RU'
 
     @classmethod
-    def list_of_countries(cls):
+    def list_of_countries(cls) -> list:
         """
         Class method to return the list of possible countries
         """

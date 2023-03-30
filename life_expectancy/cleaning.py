@@ -1,7 +1,8 @@
 import argparse
 from abc import ABC, abstractmethod
+from pathlib import Path
 import pandas as pd
-from life_expectancy.i_o import load_data, save_data
+from life_expectancy.i_o import save_data, FileReader, TsvFileReader, ZippedJsonFileReader
 from life_expectancy.countries import Country
 
 class FileCleaner(ABC):
@@ -16,12 +17,12 @@ class FileCleaner(ABC):
         """
         pass
 
-class TsvFileReadClean(FileCleaner):
+class TsvFileCleaner(FileCleaner):
     """
     Class to clean tsv files that inherits from the FileCleaner abstract class
     """
     ext='tsv'
-    def clean_data(self, df):
+    def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df=pd.melt(df, id_vars=df.columns[0:4], value_vars=df.columns[4:], var_name='year')
         df.rename(columns={'geo\\time':'region'},inplace=True)
         df = df.astype({"year": int})
@@ -30,41 +31,54 @@ class TsvFileReadClean(FileCleaner):
         df = df.astype({"value": float})
         return df
 
-class ZippedJsonReadClean(FileCleaner):
+class ZippedJsonCleaner(FileCleaner):
     """
     Class to clean zipped json files that inherits from the FileCleaner abstract class
     """
     ext='zip'
-    def clean_data(self, df):
+    def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df.rename(columns={'life_expectancy':'value'},inplace=True)
         df.drop(['flag','flag_detail'],inplace=True)
         df.dropna(inplace=True)
         return df
 
-def clean_data(df: pd.DataFrame, ext: str='tsv'):
+class Strategy:
     """
-    Function to clean the raw data from eu life expectancy
-
-    :param df: Pandas df with the raw data
-    :return df: Returns a clean pandas df
+    Class to chose between readers and cleaners based on type of file
     """
-    if ext=='tsv':
-        cleaner=TsvFileReadClean()
-    elif ext=='zip':
-        cleaner=ZippedJsonReadClean()
-    df=cleaner.clean_data(df)
-    return df
+    tsv = (TsvFileReader(), TsvFileCleaner())
+    zip = (ZippedJsonFileReader(), ZippedJsonCleaner())
 
-def main(region: str = 'PT', path: str ='./life_expectancy/data/eu_life_expectancy_raw.tsv'):
+    @classmethod
+    def from_file(cls, filepath: Path) -> (FileReader, FileCleaner):
+        """
+        Get file path, extract the file extension and return the corresponding reader and cleaners
+        """
+        for member in vars(cls).keys():
+            if '.'+member == filepath.suffix:
+                return getattr(cls, member)
+        raise ValueError(f"No member found with suffix {filepath.suffix}")
+# def clean_data(cleaner: FileCleaner):
+#     """
+#     Function to clean the raw data from eu life expectancy
+
+#     :param df: Pandas df with the raw data
+#     :return df: Returns a clean pandas df
+#     """
+#     df=cleaner.clean_data(df)
+#     return df
+
+def main(region: str = 'PT', path: Path =Path('./life_expectancy/data/eu_life_expectancy_raw.tsv')) -> pd.DataFrame:
     """
     Calls all the functions to load, clean and save the data from life expectancy
 
     :param region: Optional region string parameter that defaults into 'PT'
     """
     # pylint: disable=redefined-outer-name
-    ext=path.split('.')[-1]
-    raw_df=load_data(path)
-    clean_df=clean_data(raw_df,ext)
+    strategy=Strategy()
+    reader, cleaner = strategy.from_file(path)
+    raw_df=reader.read_file(path)
+    clean_df=cleaner.clean_data(raw_df)
 
     country=Country(region)
     clean_df_region=save_data(clean_df,country)
@@ -77,4 +91,4 @@ if __name__ == "__main__":  # pragma: no cover
     parser.add_argument('region', metavar='region', \
             type=str, nargs='?',help='region string (example for Portugal: \'PT\')',default='PT')
     args = parser.parse_args()
-    main(region=args.region,path=args.path)
+    main(region=args.region,path=Path(args.path))

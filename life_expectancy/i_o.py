@@ -19,8 +19,7 @@ class TsvFileReader(FileReader):
     """
     Class to read tsv files that inherits from the FileReader abstract class
     """
-    ext='tsv'
-    def read_file(self, file_path: str):
+    def read_file(self, file_path: str) -> pd.DataFrame:
         # code to read CSV file
         df=pd.read_csv(file_path, sep='\t|,',engine ='python')
         return df
@@ -29,8 +28,7 @@ class ZippedJsonFileReader(FileReader):
     """
     Class to read zipped json files that inherits from the FileReader abstract class
     """
-    ext='zip'
-    def read_file(self, file_path: str):
+    def read_file(self, file_path: str) -> pd.DataFrame:
         # code to read zipped JSON file
         with zipfile.ZipFile(file_path) as zip_file:
             json_file_name = None
@@ -44,22 +42,7 @@ class ZippedJsonFileReader(FileReader):
                     df=pd.read_json(json_file)
         return df
 
-def load_data(path: str):
-    """
-    Function to load the raw data from eu life expectancy
-
-    :param path: path to the file to read
-    :return df: Returns pandas df with the raw data
-    """
-    if path.endswith('.tsv'):
-        reader = TsvFileReader()
-    elif path.endswith('.zip'):
-        reader = ZippedJsonFileReader()
-
-    df = reader.read_file(path)
-    return df
-
-def save_data(df:pd.DataFrame, country: Country):
+def save_data(df:pd.DataFrame, country: Country) -> pd.DataFrame:
     """
     Function to save the cleaned data from life expectancy for a specific region
 
