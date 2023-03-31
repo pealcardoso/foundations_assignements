@@ -30,15 +30,9 @@ class ZippedJsonFileReader(FileReader):
     def read_file(self, file_path: str) -> pd.DataFrame:
         # code to read zipped JSON file
         with zipfile.ZipFile(file_path) as zip_file:
-            json_file_name = None
-            for name in zip_file.namelist():
-                if name.endswith('.json'):
-                    json_file_name = name
-                    break
-
-            if json_file_name:
-                with zip_file.open(json_file_name) as json_file:
-                    df=pd.read_json(json_file)
+            zipped_fname = zip_file.namelist()[0]
+            with zip_file.open(zipped_fname) as json_file:
+                df = pd.read_json(json_file)
         return df
 
 def save_data(df:pd.DataFrame, country: Country) -> pd.DataFrame:
