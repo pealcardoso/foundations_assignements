@@ -7,9 +7,8 @@ class FileReader(ABC):
     """
     Abstract class for reading different types of files
     """
-    ext=''
     @abstractmethod
-    def read_file(self, file_path):
+    def read_file(self, file_path: str):
         """
         Abstract method for reading different types of files
         """

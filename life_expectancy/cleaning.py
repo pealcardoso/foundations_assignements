@@ -9,7 +9,6 @@ class FileCleaner(ABC):
     """
     Abstract class for reading different types of files
     """
-    ext=''
     @abstractmethod
     def clean_data(self, df: pd.DataFrame):
         """
@@ -21,7 +20,6 @@ class TsvFileCleaner(FileCleaner):
     """
     Class to clean tsv files that inherits from the FileCleaner abstract class
     """
-    ext='tsv'
     def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df=pd.melt(df, id_vars=df.columns[0:4], value_vars=df.columns[4:], var_name='year')
         df.rename(columns={'geo\\time':'region'},inplace=True)
@@ -35,7 +33,6 @@ class ZippedJsonCleaner(FileCleaner):
     """
     Class to clean zipped json files that inherits from the FileCleaner abstract class
     """
-    ext='zip'
     def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df.rename(columns={'life_expectancy':'value'},inplace=True)
         df.drop(['flag','flag_detail'],inplace=True)
